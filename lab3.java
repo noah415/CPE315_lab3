@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.lang.*;
 import java.util.*;
 
-class lab2
+class lab3
 {
     final int initAddress = 0; // this is the address of the first instruction in MIPS
     static HashMap<String, Integer[]> rcodes = new HashMap<String, Integer[]>();
@@ -59,6 +59,52 @@ class lab2
 
     }
 
+    private void findLabels(String[] args) throws FileNotFoundException
+    {
+        // line count
+        int count = 0;
+        // string to read in
+        String line = null;
+        String label = null;
+        int index = 0;
+
+        Scanner scanner = new Scanner(new File(args[0]));
+        // read lines in file (first pass)
+        while (scanner.hasNextLine()) {
+            // remove all whitespace
+            line = scanner.nextLine().trim();
+            // get length of line
+            int len = line.length();
+            // check if line is null or empty after trim
+            if((!line.trim().isEmpty() && line != null) && line.charAt(0) == '#'){
+                //System.out.println("We found a comment!");
+                continue;
+            }
+            // if the line has been trimmed and is still not empty:
+            if(len > 0) {
+                // check to see if there is a label somewhere to be parsed
+                if((index = line.indexOf(':')) != -1) {
+                    // get the substring
+                    label = line.substring(0, index);
+                    //System.out.println("Label " + label + " Found! Line " + count + " is: " + line + " Index is: " + index);
+                    // append to dictionary
+                    if(label.indexOf('#') == -1)
+                        labels.put(label, count);
+                    // we found a label, check to see if the line is blank (ie just a comment)
+                    // if so, don't increment count
+                    if(!validLine(line, index + 1)) {
+                        //System.out.println("Line continues on next one");
+                        continue;
+                    }
+                }
+                // only increment count if it is a valid line (non-comment, non-whitespace)
+                count++;
+            }
+            // process the line
+        }
+        scanner.close();
+    }
+
     private static boolean validLine(String line, int offset){
         // goes through the line from offset + 1 to end.
         // if no alphanumerica chars are found to the left of a "#", then
@@ -92,7 +138,7 @@ class lab2
             System.out.println("Usage: lab2 <filename>");
             return;
         }
-        
+
         try {
             Scanner scanner = new Scanner(new File(args[0]));
             // read lines in file (first pass)
@@ -131,7 +177,7 @@ class lab2
             scanner.close();
 
             // read lines in file (second pass)
-            /* ---------------------------------------------------------------------------*/
+            /* --------------------------------------------------------------------------- */
             //System.out.println("keys =" + Arrays.asList(labels.keySet()));
 
             Scanner scannerOne = new Scanner(new File(args[0]));
