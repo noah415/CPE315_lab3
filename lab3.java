@@ -87,10 +87,12 @@ class lab2
         String line = null;
         String label = null;
         int index = 0;
+
         if(args.length != 1){
             System.out.println("Usage: lab2 <filename>");
             return;
         }
+        
         try {
             Scanner scanner = new Scanner(new File(args[0]));
             // read lines in file (first pass)
