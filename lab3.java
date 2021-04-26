@@ -59,7 +59,21 @@ class lab3
 
     }
 
-    private void findLabels(String[] args) throws FileNotFoundException
+    private static boolean removeWhiteSpace(Scanner scanner, String line)
+    {
+        // remove all whitespace
+        line = scanner.nextLine().trim();
+        // get length of line
+        int len = line.length();
+        // check if line is null or empty after trim
+        if((!line.trim().isEmpty() && line != null) && line.charAt(0) == '#'){
+            //System.out.println("We found a comment!");
+            return false;
+        }
+        return true;
+    }
+
+    private static void findLabels(String[] args) throws FileNotFoundException
     {
         // line count
         int count = 0;
@@ -105,6 +119,105 @@ class lab3
         scanner.close();
     }
 
+    private static void processAssembly(String[] args, String line) throws FileNotFoundException
+    {
+        Scanner scannerOne = new Scanner(new File(args[0]));
+        int count = 0;
+        int hashIndex;
+        String opcode;
+        int labelIndex;
+        List<String> instParts;
+        Instruction inst;
+        int ln;
+        int dest;
+        int r1;
+        int r2;
+        int immediate;
+        int addr;
+
+        while (scannerOne.hasNextLine()) {
+
+            // remove all whitespace
+            line = scannerOne.nextLine().trim();
+            hashIndex = line.indexOf('#');
+            if (hashIndex != -1)
+                line = line.substring(0, hashIndex);
+
+            if (line.length() == 0) // removes all remaining whitespace and checks the length
+                continue;
+
+            labelIndex = line.indexOf(':');
+
+            if (labelIndex != -1) {
+                line = line.substring(labelIndex + 1, line.length());
+                line = line.trim();
+            }
+
+            if (line.length() == 0) // removes all remaining whitespace and checks the length
+                continue;
+            instParts = Arrays.asList(line.split("[:, $()]+")); //splits line by whitespace and commas
+            opcode = instParts.get(0);
+            opcode = opcode.trim();
+            // System.out.println("Opcode is: " + opcode + " count is: " + count);
+            if(rcodes.containsKey(opcode)){
+                //System.out.println("Opcode is R-format");
+                ln = instParts.size();
+                if(ln == 2){
+                    // jr instruction detected
+                    dest = 0;
+                    r1 = registers.get(instParts.get(1));
+                    r2 = 0;
+                }
+                else {
+                    dest = registers.get(instParts.get(1));
+                    r1 = registers.get(instParts.get(2));
+                    if (registers.containsKey(instParts.get(3)))
+                        r2 = registers.get(instParts.get(3));
+                    else
+                        r2 = Integer.parseInt(instParts.get(3));
+                }
+                RFormat r = new RFormat((int)rcodes.get(opcode)[0], dest, r1, r2, (int)rcodes.get(opcode)[1]);
+                r.printBinary();
+            }
+            else if(icodes.containsKey(opcode)){
+                //System.out.println("Opcode is I-format");
+                for(int j = 0; j < instParts.size(); j++){
+                    //System.out.println("part is : " + instParts.get(j));
+                }
+                //r1 was here
+                if(!registers.containsKey(instParts.get(2)))
+                {
+                    Collections.swap(instParts, 2, 3);
+                    Collections.swap(instParts, 1, 2);
+                }
+                r1 = registers.get(instParts.get(1));
+                r2 = registers.get(instParts.get(2));
+                if(labels.containsKey(instParts.get(3).trim()))
+                    immediate = labels.get(instParts.get(3).trim()) - (count + 1);
+                else
+                    immediate = Integer.parseInt(instParts.get(3));
+                IFormat i = new IFormat ((int)icodes.get(opcode)[0], r1, r2, immediate);
+                //System.out.println("imm is " + immediate);
+                i.printBinary();
+            }
+            else if(jcodes.containsKey(opcode)){
+                //System.out.println("Opcode is J-format");
+                if(labels.containsKey(instParts.get(1).trim()))
+                    addr = labels.get(instParts.get(1).trim());
+                else
+                    addr = Integer.parseInt(instParts.get(1));
+                JFormat j = new JFormat((int)jcodes.get(opcode)[0], addr);
+                j.printBinary();
+            }
+            else{
+                System.out.println("invalid instruction: " + opcode);
+                return;
+            }
+
+            count ++; //
+        }
+    }
+
     private static boolean validLine(String line, int offset){
         // goes through the line from offset + 1 to end.
         // if no alphanumerica chars are found to the left of a "#", then
@@ -140,141 +253,16 @@ class lab3
         }
 
         try {
-            Scanner scanner = new Scanner(new File(args[0]));
-            // read lines in file (first pass)
-            while (scanner.hasNextLine()) {
-                // remove all whitespace
-                line = scanner.nextLine().trim();
-                // get length of line
-                int len = line.length();
-                // check if line is null or empty after trim
-                if((!line.trim().isEmpty() && line != null) && line.charAt(0) == '#'){
-                    //System.out.println("We found a comment!");
-                    continue;
-                }
-                // if the line has been trimmed and is still not empty:
-                if(len > 0) {
-                    // check to see if there is a label somewhere to be parsed
-                    if((index = line.indexOf(':')) != -1) {
-                        // get the substring
-                        label = line.substring(0, index);
-                        //System.out.println("Label " + label + " Found! Line " + count + " is: " + line + " Index is: " + index);
-                        // append to dictionary
-                        if(label.indexOf('#') == -1)
-                            labels.put(label, count);
-                        // we found a label, check to see if the line is blank (ie just a comment)
-                        // if so, don't increment count
-                        if(!validLine(line, index + 1)) {
-                            //System.out.println("Line continues on next one");
-                            continue;
-                        }
-                    }
-                    // only increment count if it is a valid line (non-comment, non-whitespace)
-                    count++;
-                }
-                // process the line
-            }
-            scanner.close();
+            // creates a hashMap of labels (first pass)
+            /* --------------------------------------------------------------------------- */
+
+            findLabels(args);
 
             // read lines in file (second pass)
             /* --------------------------------------------------------------------------- */
-            //System.out.println("keys =" + Arrays.asList(labels.keySet()));
 
-            Scanner scannerOne = new Scanner(new File(args[0]));
-            count = 0;
-            int hashIndex;
-            String opcode;
-            int labelIndex;
-            List<String> instParts;
-            Instruction inst;
-            int ln;
-            int dest;
-            int r1;
-            int r2;
-            int immediate;
-            int addr;
+            processAssembly(args, line);
 
-            while (scannerOne.hasNextLine()) {
-
-                // remove all whitespace
-                line = scannerOne.nextLine().trim();
-                hashIndex = line.indexOf('#');
-                if (hashIndex != -1)
-                    line = line.substring(0, hashIndex);
-
-                if (line.length() == 0) // removes all remaining whitespace and checks the length
-                    continue;
-
-                labelIndex = line.indexOf(':');
-
-                if (labelIndex != -1) {
-                    line = line.substring(labelIndex + 1, line.length());
-                    line = line.trim();
-                }
-
-                if (line.length() == 0) // removes all remaining whitespace and checks the length
-                    continue;
-                instParts = Arrays.asList(line.split("[:, $()]+")); //splits line by whitespace and commas
-                opcode = instParts.get(0);
-                opcode = opcode.trim();
-                // System.out.println("Opcode is: " + opcode + " count is: " + count);
-                if(rcodes.containsKey(opcode)){
-                    //System.out.println("Opcode is R-format");
-                    ln = instParts.size();
-                    if(ln == 2){
-                        // jr instruction detected
-                        dest = 0;
-                        r1 = registers.get(instParts.get(1));
-                        r2 = 0;
-                    }
-                    else {
-                        dest = registers.get(instParts.get(1));
-                        r1 = registers.get(instParts.get(2));
-                        if (registers.containsKey(instParts.get(3)))
-                            r2 = registers.get(instParts.get(3));
-                        else
-                            r2 = Integer.parseInt(instParts.get(3));
-                    }
-                    RFormat r = new RFormat((int)rcodes.get(opcode)[0], dest, r1, r2, (int)rcodes.get(opcode)[1]);
-                    r.printBinary();
-                }
-                else if(icodes.containsKey(opcode)){
-                    //System.out.println("Opcode is I-format");
-                    for(int j = 0; j < instParts.size(); j++){
-                        //System.out.println("part is : " + instParts.get(j));
-                    }
-                    //r1 was here
-                    if(!registers.containsKey(instParts.get(2)))
-                    {
-                        Collections.swap(instParts, 2, 3);
-                        Collections.swap(instParts, 1, 2);
-                    }
-                    r1 = registers.get(instParts.get(1));
-                    r2 = registers.get(instParts.get(2));
-                    if(labels.containsKey(instParts.get(3).trim()))
-                        immediate = labels.get(instParts.get(3).trim()) - (count + 1);
-                    else
-                        immediate = Integer.parseInt(instParts.get(3));
-                    IFormat i = new IFormat ((int)icodes.get(opcode)[0], r1, r2, immediate);
-                    //System.out.println("imm is " + immediate);
-                    i.printBinary();
-                }
-                else if(jcodes.containsKey(opcode)){
-                    //System.out.println("Opcode is J-format");
-                    if(labels.containsKey(instParts.get(1).trim()))
-                        addr = labels.get(instParts.get(1).trim());
-                    else
-                        addr = Integer.parseInt(instParts.get(1));
-                    JFormat j = new JFormat((int)jcodes.get(opcode)[0], addr);
-                    j.printBinary();
-                }
-                else{
-                    System.out.println("invalid instruction: " + opcode);
-                    return;
-                }
-
-                count ++; //
-            }
         }
         catch(FileNotFoundException e){
             System.out.println("File not found!");
