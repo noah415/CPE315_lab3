@@ -59,16 +59,39 @@ class lab3
 
     }
 
-    private static boolean removeWhiteSpace(Scanner scanner, String line)
+    private static int removeWhiteSpace(String line, int len)
     {
         // remove all whitespace
-        line = scanner.nextLine().trim();
+        line = line.trim();
         // get length of line
-        int len = line.length();
+        len = line.length();
         // check if line is null or empty after trim
         if((!line.trim().isEmpty() && line != null) && line.charAt(0) == '#'){
             //System.out.println("We found a comment!");
-            return false;
+            return -1;
+        }
+        return len;
+    }
+
+    private static boolean grabLabels(int count, String line)
+    {
+        int index;
+        String label = null;
+
+        // check to see if there is a label somewhere to be parsed
+        if((index = line.indexOf(':')) != -1) {
+            // get the substring
+            label = line.substring(0, index);
+            //System.out.println("Label " + label + " Found! Line " + count + " is: " + line + " Index is: " + index);
+            // append to dictionary
+            if(label.indexOf('#') == -1)
+                labels.put(label, count);
+            // we found a label, check to see if the line is blank (ie just a comment)
+            // if so, don't increment count
+            if(!validLine(line, index + 1)) {
+                //System.out.println("Line continues on next one");
+                return false;
+            }
         }
         return true;
     }
@@ -81,19 +104,18 @@ class lab3
         String line = null;
         String label = null;
         int index = 0;
+        int len = 0;
 
         Scanner scanner = new Scanner(new File(args[0]));
         // read lines in file (first pass)
         while (scanner.hasNextLine()) {
-            // remove all whitespace
+            // creates a String for the file line
             line = scanner.nextLine().trim();
-            // get length of line
-            int len = line.length();
-            // check if line is null or empty after trim
-            if((!line.trim().isEmpty() && line != null) && line.charAt(0) == '#'){
-                //System.out.println("We found a comment!");
+
+            // remove all whitespace
+            if ((len = removeWhiteSpace(line, len)) == -1)
                 continue;
-            }
+
             // if the line has been trimmed and is still not empty:
             if(len > 0) {
                 // check to see if there is a label somewhere to be parsed
