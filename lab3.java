@@ -11,6 +11,9 @@ class lab3
     static HashMap<String, Integer[]> jcodes = new HashMap<String, Integer[]>();
     static HashMap<String, Integer> labels = new HashMap<String, Integer>();
     static HashMap<String, Integer> registers = new HashMap<String, Integer>();
+    static ArrayList<Instruction> instructions = new ArrayList<Instruction>();
+    static int[] regersterList = new int[28];
+    static int[] memory = new int[8192];
 
     static void putValues(char prefix, int start, int end, int offset, HashMap<String, Integer> map){
         for(int i = start; i <= end; i++)
@@ -199,7 +202,8 @@ class lab3
                         r2 = Integer.parseInt(instParts.get(3));
                 }
                 RFormat r = new RFormat((int)rcodes.get(opcode)[0], dest, r1, r2, (int)rcodes.get(opcode)[1]);
-                r.printBinary();
+                // r.printBinary();
+                instructions.add(r);
             }
             else if(icodes.containsKey(opcode)){
                 //System.out.println("Opcode is I-format");
@@ -220,7 +224,8 @@ class lab3
                     immediate = Integer.parseInt(instParts.get(3));
                 IFormat i = new IFormat ((int)icodes.get(opcode)[0], r1, r2, immediate);
                 //System.out.println("imm is " + immediate);
-                i.printBinary();
+                // i.printBinary();
+                instructions.add(i);
             }
             else if(jcodes.containsKey(opcode)){
                 //System.out.println("Opcode is J-format");
@@ -229,7 +234,7 @@ class lab3
                 else
                     addr = Integer.parseInt(instParts.get(1));
                 JFormat j = new JFormat((int)jcodes.get(opcode)[0], addr);
-                j.printBinary();
+                instructions.add(j);
             }
             else{
                 System.out.println("invalid instruction: " + opcode);
@@ -272,7 +277,7 @@ class lab3
 
             System.out.print(input);
 
-            if (input == 'q')
+            if (input.charAt(0) == 'q')
                 break;
         }
     }
