@@ -278,14 +278,14 @@ class lab3
         String third;
         String fourth;
         // prints the contents of the registers...
-        System.out.print("\tPC: " + registerList[32]);
+        System.out.print("\npc: " + registerList[32]);
         for(int i = 0; i < 32; i++){
             if(indexes.size() == 4){
                 first = reversed.get(indexes.get(0));
                 second = reversed.get(indexes.get(1));
                 third = reversed.get(indexes.get(2));
                 fourth = reversed.get(indexes.get(3));
-                System.out.print("\n\t" + first + ": " + registerList[indexes.get(0)]);
+                System.out.print("\n" + first + ": " + registerList[indexes.get(0)]);
                 System.out.print("\t" + second + ": " + registerList[indexes.get(1)]);
                 System.out.print("\t" + third + ": " + registerList[indexes.get(2)]);
                 System.out.print("\t" + fourth + ": " + registerList[indexes.get(3)]);
@@ -297,9 +297,9 @@ class lab3
         first = reversed.get(indexes.get(0));
         second = reversed.get(indexes.get(1));
         third = reversed.get(indexes.get(2));
-        System.out.print("\n\t" + first + ": " + registerList[indexes.get(0)]);
+        System.out.print("\n" + first + ": " + registerList[indexes.get(0)]);
         System.out.print("\t" + second + ": " + registerList[indexes.get(1)]);
-        System.out.print("\t" + third + ": " + registerList[indexes.get(2)] + "\n");
+        System.out.print("\t" + third + ": " + registerList[indexes.get(2)] + "\n\n");
     }
 
     private static void clearAll(){
@@ -355,7 +355,14 @@ class lab3
 
     private static void printHelp()
     {
-
+        System.out.println("\nh = show help");
+        System.out.println("d = dump register state");
+        System.out.println("s = single step through the program (i.e. execute 1 instruction and stop)");
+        System.out.println("s num = step through num instructions of the program");
+        System.out.println("r = run until the program ends");
+        System.out.println("m num1 num2 = display data memory from location num1 to num2");
+        System.out.println("c = clear all registers, memory, and the program counter to 0");
+        System.out.println("q = exit the program\n");
     }
 
     private static void runSimulator(String[] args)
@@ -374,6 +381,8 @@ class lab3
         {
             System.out.print("mips> ");
             input = scanner.nextLine();
+            if (args.length == 2)
+                System.out.print(input + "\n");
             char chr = input.charAt(0);
             if (chr == 'q')
                 break;
@@ -403,8 +412,8 @@ class lab3
         String label = null;
         int index = 0;
 
-        if(args.length != 1){
-            System.out.println("Usage: lab2 <filename>");
+        if(args.length == 0 || args.length > 2){
+            System.out.println("Usage: lab3 inputFile <script>");
             return;
         }
 
