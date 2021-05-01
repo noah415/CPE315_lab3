@@ -238,6 +238,7 @@ class lab3
 
             count ++; //
         }
+        scannerOne.close();
     }
 
     private static boolean validLine(String line, int offset){
@@ -257,6 +258,23 @@ class lab3
         // if we reach the end without finding a '#' or alphanumeric
         // line is empty (whitespace)
         return false;
+    }
+
+    private static void runSimulator()
+    {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+
+        while (true)
+        {
+            System.out.print("mips>");
+            input = scanner.nextLine();
+
+            System.out.print(input);
+
+            if (input == 'q')
+                break;
+        }
     }
 
     public static void main(String[] args)
@@ -290,5 +308,7 @@ class lab3
             System.out.println("File not found!");
             return;
         }
+
+        runSimulator();
     }
 }
