@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.*;
 import java.util.*;
+import java.io.FileInputStream;
 
 class lab3
 {
@@ -11,8 +12,9 @@ class lab3
     static HashMap<String, Integer[]> jcodes = new HashMap<String, Integer[]>();
     static HashMap<String, Integer> labels = new HashMap<String, Integer>();
     static HashMap<String, Integer> registers = new HashMap<String, Integer>();
+    static HashMap<Integer, String> reversed = new HashMap<Integer, String>();
     static ArrayList<Instruction> instructions = new ArrayList<Instruction>();
-    static int[] regersterList = new int[28];
+    static int[] registerList = new int[33];
     static int[] memory = new int[8192];
 
     static void putValues(char prefix, int start, int end, int offset, HashMap<String, Integer> map){
@@ -59,6 +61,10 @@ class lab3
         registers.put("t9", 25);
         registers.put("sp", 29);
         registers.put("ra", 31);
+
+        for(Map.Entry<String, Integer> entry : registers.entrySet()){
+            reversed.put(entry.getValue(), "$" + entry.getKey());
+        }
 
     }
 
@@ -108,7 +114,7 @@ class lab3
         String label = null;
         int index = 0;
         int len = 0;
-
+        System.out.println(args[0]);
         Scanner scanner = new Scanner(new File(args[0]));
         // read lines in file (first pass)
         while (scanner.hasNextLine()) {
@@ -211,7 +217,7 @@ class lab3
                     //System.out.println("part is : " + instParts.get(j));
                 }
                 //r1 was here
-                if(!registers.containsKey(instParts.get(2)))
+                if(opcode.equals("sw") || opcode.equals("lw"))
                 {
                     Collections.swap(instParts, 2, 3);
                     Collections.swap(instParts, 1, 2);
@@ -265,8 +271,60 @@ class lab3
         return false;
     }
 
-    private static void runSimulator()
+    private static void printRegisters(){
+        ArrayList<Integer> indexes = new ArrayList<Integer>();
+        String first;
+        String second;
+        String third;
+        String fourth;
+        // prints the contents of the registers...
+        System.out.print("\tPC: " + registerList[32]);
+        for(int i = 0; i < 32; i++){
+            if(indexes.size() == 4){
+                first = reversed.get(indexes.get(0));
+                second = reversed.get(indexes.get(1));
+                third = reversed.get(indexes.get(2));
+                fourth = reversed.get(indexes.get(3));
+                System.out.print("\n\t" + first + ": " + registerList[indexes.get(0)]);
+                System.out.print("\t" + second + ": " + registerList[indexes.get(1)]);
+                System.out.print("\t" + third + ": " + registerList[indexes.get(2)]);
+                System.out.print("\t" + fourth + ": " + registerList[indexes.get(3)]);
+                indexes.clear();
+            }
+            if(reversed.containsKey(i))
+                indexes.add(i);
+        }
+        first = reversed.get(indexes.get(0));
+        second = reversed.get(indexes.get(1));
+        third = reversed.get(indexes.get(2));
+        System.out.print("\n\t" + first + ": " + registerList[indexes.get(0)]);
+        System.out.print("\t" + second + ": " + registerList[indexes.get(1)]);
+        System.out.print("\t" + third + ": " + registerList[indexes.get(2)] + "\n");
+    }
+
+    private static void clearAll(){
+        Arrays.fill(registerList, 0);
+        Arrays.fill(memory, 0);
+    }
+
+    private static void printMemory(String input){
+        List<String> instParts = Arrays.asList(input.split(" "));
+        int start = Integer.parseInt(instParts.get(1));
+        int end = Integer.parseInt(instParts.get(2));
+        for(int i = start; i <= end; i++){
+            System.out.println("[" + i + "] = " + memory[i]);
+        }
+    }
+
+    private static void runSimulator(String[] args)
     {
+        if (args.length == 2) {
+            try{
+                File myFile = new File(args[1]);
+                System.setIn(new FileInputStream(myFile));
+            }catch(Exception e) {System.out.println(e);}
+        }
+
         Scanner scanner = new Scanner(System.in);
         String input;
 
@@ -274,11 +332,15 @@ class lab3
         {
             System.out.print("mips>");
             input = scanner.nextLine();
-
-            System.out.print(input);
-
-            if (input.charAt(0) == 'q')
+            char chr = input.charAt(0);
+            if (chr == 'q')
                 break;
+            else if (chr == 'd')
+                printRegisters();
+            else if (chr == 'm')
+                printMemory(input);
+            else if (chr == 'c')
+                clearAll();
         }
     }
 
@@ -314,6 +376,6 @@ class lab3
             return;
         }
 
-        runSimulator();
+        runSimulator(args);
     }
 }
