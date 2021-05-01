@@ -305,6 +305,7 @@ class lab3
     private static void clearAll(){
         Arrays.fill(registerList, 0);
         Arrays.fill(memory, 0);
+        System.out.println("\tSimulator reset")
     }
 
     private static void printMemory(String input){
