@@ -114,7 +114,6 @@ class lab3
         String label = null;
         int index = 0;
         int len = 0;
-        System.out.println(args[0]);
         Scanner scanner = new Scanner(new File(args[0]));
         // read lines in file (first pass)
         while (scanner.hasNextLine()) {
@@ -227,7 +226,7 @@ class lab3
                 if(labels.containsKey(instParts.get(3).trim()))
                     immediate = labels.get(instParts.get(3).trim()) - (count + 1);
                 else
-                    immediate = Integer.parseInt(instParts.get(3));
+                    immediate = Integer.parseInt(instParts.get(3).trim());
                 IFormat i = new IFormat ((int)icodes.get(opcode)[0], r1, r2, immediate);
                 //System.out.println("imm is " + immediate);
                 // i.printBinary();
@@ -278,17 +277,17 @@ class lab3
         String third;
         String fourth;
         // prints the contents of the registers...
-        System.out.print("\npc: " + registerList[32]);
+        System.out.print("\npc = " + registerList[32]);
         for(int i = 0; i < 32; i++){
             if(indexes.size() == 4){
                 first = reversed.get(indexes.get(0));
                 second = reversed.get(indexes.get(1));
                 third = reversed.get(indexes.get(2));
                 fourth = reversed.get(indexes.get(3));
-                System.out.print("\n" + first + ": " + registerList[indexes.get(0)]);
-                System.out.print("\t" + second + ": " + registerList[indexes.get(1)]);
-                System.out.print("\t" + third + ": " + registerList[indexes.get(2)]);
-                System.out.print("\t" + fourth + ": " + registerList[indexes.get(3)]);
+                System.out.print("\n" + first + " = " + registerList[indexes.get(0)]);
+                System.out.print("        " + second + " = " + registerList[indexes.get(1)]);
+                System.out.print("        " + third + " = " + registerList[indexes.get(2)]);
+                System.out.print("        " + fourth + " = " + registerList[indexes.get(3)]);
                 indexes.clear();
             }
             if(reversed.containsKey(i))
@@ -297,15 +296,15 @@ class lab3
         first = reversed.get(indexes.get(0));
         second = reversed.get(indexes.get(1));
         third = reversed.get(indexes.get(2));
-        System.out.print("\n" + first + ": " + registerList[indexes.get(0)]);
-        System.out.print("\t" + second + ": " + registerList[indexes.get(1)]);
-        System.out.print("\t" + third + ": " + registerList[indexes.get(2)] + "\n\n");
+        System.out.print("\n" + first + " = " + registerList[indexes.get(0)]);
+        System.out.print("        " + second + " = " + registerList[indexes.get(1)]);
+        System.out.print("        " + third + " = " + registerList[indexes.get(2)] + "\n\n");
     }
 
     private static void clearAll(){
         Arrays.fill(registerList, 0);
         Arrays.fill(memory, 0);
-        System.out.println("\tSimulator reset");
+        System.out.println("        Simulator reset");
     }
 
     private static void printMemory(String input){
@@ -342,7 +341,7 @@ class lab3
         else
             singleStep();
 
-        System.out.println("\t" + numLoop + " instruction(s) executed");
+        System.out.println("        " + numLoop + " instruction(s) executed");
     }
 
     private static void run()
@@ -433,7 +432,7 @@ class lab3
             System.out.println("File not found!");
             return;
         }
-
+        System.out.println("");
         runSimulator(args);
     }
 }

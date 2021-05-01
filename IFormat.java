@@ -51,7 +51,7 @@ class IFormat extends Instruction{
 
     // may be wrong registers
 
-    private void addi(){ lab3.registerList[rt] = lab3.registerList[rs] + immediate; }
+    private void addi(){ lab3.registerList[rs] = lab3.registerList[rt] + immediate; }
 
     private void beq(){
         if (lab3.registerList[rs] == lab3.registerList[rt])
