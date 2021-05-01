@@ -327,25 +327,34 @@ class lab3
         {
             singleStep();
         }
+
     }
 
     private static void step(String input)
     {
+        int numLoop = 1;
         List<String> instParts = Arrays.asList(input.split(" "));
-        if (instParts.length() > 1) {
-            int numLoop = instParts.get(1);
-            multStep(Integer.parseInt(numLoop));
+        if (instParts.size() > 1) {
+            numLoop = Integer.parseInt(instParts.get(1));
+            multStep(numLoop);
         }
         else
             singleStep();
+
+        System.out.println("\t" + numLoop + " instruction(s) executed");
     }
 
     private static void run()
     {
-        for (int i = registerList[32]; i < instructions.length(); i++)
+        for (int i = registerList[32]; i < instructions.size(); i++)
         {
             singleStep();
         }
+    }
+
+    private static void printHelp()
+    {
+
     }
 
     private static void runSimulator(String[] args)
