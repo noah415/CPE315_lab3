@@ -31,9 +31,11 @@ class IFormat extends Instruction{
                 lab3.registerList[32]++;
                 break;
             case 4:
+                lab3.registerList[32]++;
                 beq();
                 break;
             case 5:
+                lab3.registerList[32]++;
                 bne();
                 break;
             case 35:
@@ -52,16 +54,19 @@ class IFormat extends Instruction{
     private void addi(){ lab3.registerList[rt] = lab3.registerList[rs] + immediate; }
 
     private void beq(){
-        if (rs == rt)
-            lab3.registerList[32] = lab3.registerList[32] + immediate + 1;
+        if (lab3.registerList[rs] == lab3.registerList[rt])
+            lab3.registerList[32] = lab3.registerList[32] + immediate;
     }
 
     private void bne(){
-        if (rs != rt)
-            lab3.registerList[32] = lab3.registerList[32] + immediate + 1;
+        if (lab3.registerList[rs] != lab3.registerList[rt])
+            lab3.registerList[32] = lab3.registerList[32] + immediate;
     }
 
-    private void lw(){ lab3.registerList[rt] = lab3.memory[rs] + immediate; }
+    private void lw(){
+        //System.out.println("rt: " + rt + ", rs: " + rs + ", imm: " + immediate);
+        lab3.registerList[rt] = lab3.memory[lab3.registerList[rs] + immediate];
+    }
 
-    private void sw(){ lab3.memory[lab3.registerList[rt]] = lab3.registerList[rs] + immediate; }
+    private void sw(){ lab3.memory[lab3.registerList[rs] + immediate] = lab3.registerList[rt]; }
 }

@@ -347,7 +347,7 @@ class lab3
 
     private static void run()
     {
-        for (int i = registerList[32]; i < instructions.size(); i++)
+        while (registerList[32] < instructions.size())
         {
             singleStep();
         }
@@ -372,7 +372,7 @@ class lab3
 
         while (true)
         {
-            System.out.print("mips>");
+            System.out.print("mips> ");
             input = scanner.nextLine();
             char chr = input.charAt(0);
             if (chr == 'q')
