@@ -41,4 +41,8 @@ class RFormat extends Instruction
     System.out.println(op + " " + srs + " " + srt + " " + srd + " " + sshamt + " " + sfunct);
   }
 
+  public void execute()
+  {
+    //stuff happens
+  }
 }

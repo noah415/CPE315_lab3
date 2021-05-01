@@ -271,9 +271,6 @@ class lab3
             input = scanner.nextLine();
 
             System.out.print(input);
-
-            if (input == 'q')
-                break;
         }
     }
 

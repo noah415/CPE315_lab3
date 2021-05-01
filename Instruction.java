@@ -17,6 +17,7 @@ abstract class Instruction
   }
 
   abstract public void printBinary();
+  abstract public void execute();
 
   public static String bTS(int num, int length){
     String str = "";

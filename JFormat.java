@@ -17,4 +17,8 @@ class JFormat extends Instruction
       System.out.println(op + " " + sadd);
     }
 
+    public void execute()
+    {
+        //stuff happens
+    }
 }

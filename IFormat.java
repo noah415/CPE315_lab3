@@ -22,5 +22,8 @@ class IFormat extends Instruction{
       System.out.println(op + " " + srs + " " + srt + " " + simm);
     }
 
-
+    public void execute()
+    {
+        //stuff happens
+    }
 }
