@@ -47,21 +47,27 @@ class RFormat extends Instruction
     {
       case 36:
         and();
+        lab3.registerList[32]++;
         break;
       case 37:
         or();
+        lab3.registerList[32]++;
         break;
       case 32:
         add();
+        lab3.registerList[32]++;
         break;
       case 0:
         sll();
+        lab3.registerList[32]++;
         break;
       case 34:
         sub();
+        lab3.registerList[32]++;
         break;
       case 42:
         slt();
+        lab3.registerList[32]++;
         break;
       case 8:
         jr();
