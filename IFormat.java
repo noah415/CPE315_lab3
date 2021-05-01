@@ -28,6 +28,7 @@ class IFormat extends Instruction{
         {
             case 8:
                 addi();
+                lab3.registerList[32]++;
                 break;
             case 4:
                 beq();
@@ -37,9 +38,11 @@ class IFormat extends Instruction{
                 break;
             case 35:
                 lw();
+                lab3.registerList[32]++;
                 break;
             case 43:
                 sw();
+                lab3.registerList[32]++;
                 break;
         }
     }
@@ -58,7 +61,7 @@ class IFormat extends Instruction{
             lab3.registerList[32] = lab3.registerList[32] + immediate + 1;
     }
 
-    private void lw(){ lab3.registerList[rt] = lab3.registerList[rs] + immediate; }
+    private void lw(){ lab3.registerList[rt] = lab3.memory[rs] + immediate; }
 
     private void sw(){ lab3.memory[lab3.registerList[rt]] = lab3.registerList[rs] + immediate; }
 }
