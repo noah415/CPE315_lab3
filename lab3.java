@@ -316,6 +316,38 @@ class lab3
         }
     }
 
+    private static void singleStep()
+    {
+        instructions.get(registerList[32]).execute();
+    }
+
+    private static void multStep(int numLoop)
+    {
+        for (int i = 0; i < numLoop; i++)
+        {
+            singleStep();
+        }
+    }
+
+    private static void step(String input)
+    {
+        List<String> instParts = Arrays.asList(input.split(" "));
+        if (instParts.length() > 1) {
+            int numLoop = instParts.get(1);
+            multStep(Integer.parseInt(numLoop));
+        }
+        else
+            singleStep();
+    }
+
+    private static void run()
+    {
+        for (int i = registerList[32]; i < instructions.length(); i++)
+        {
+            singleStep();
+        }
+    }
+
     private static void runSimulator(String[] args)
     {
         if (args.length == 2) {
@@ -339,6 +371,13 @@ class lab3
                 printRegisters();
             else if (chr == 'm')
                 printMemory(input);
+            else if (chr == 's') {
+                step(input);
+            }
+            else if (chr == 'r')
+                run();
+            else if (chr == 'h')
+                printHelp();
             else if (chr == 'c')
                 clearAll();
         }
