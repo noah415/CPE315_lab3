@@ -19,6 +19,21 @@ class JFormat extends Instruction
 
     public void execute()
     {
-        //stuff happens
+        switch(opcode)
+        {
+            case 2:
+                j();
+                break;
+            case 3:
+                jal();
+                break;
+        }
+    }
+
+    private void j() { lab3.registerList[32] = address; }
+
+    private void jal() {
+        lab3.registerList[31] = lab3.registerList[32] + 4;
+        lab3.registerList[32] = address;
     }
 }

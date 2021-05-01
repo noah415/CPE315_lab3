@@ -43,6 +43,64 @@ class RFormat extends Instruction
 
   public void execute()
   {
-    //stuff happens
+    switch(funct)
+    {
+      case 36:
+        and();
+        break;
+      case 37:
+        or();
+        break;
+      case 32:
+        add();
+        break;
+      case 0:
+        sll();
+        break;
+      case 34:
+        sub();
+        break;
+      case 42:
+        slt();
+        break;
+      case 8:
+        jr();
+        break;
+    }
+  }
+
+  private void add()
+  {
+    lab3.registerList[rd] = lab3.registerList[rs] + lab3.registerList[rt];
+  }
+
+  private void and()
+  {
+    lab3.registerList[rd] = lab3.registerList[rs] & lab3.registerList[rt];
+  }
+
+  private void jr()
+  {
+    lab3.registerList[32] = lab3.registerList[rs];
+  }
+
+  private void or()
+  {
+    lab3.registerList[rd] = lab3.registerList[rs] | lab3.registerList[rt];
+  }
+
+  private void slt()
+  {
+    lab3.registerList[rd] = (lab3.registerList[rs] < lab3.registerList[rt]) ? 1 : 0;
+  }
+
+  private void sll()
+  {
+    lab3.registerList[rd] = lab3.registerList[rt] << shamt;
+  }
+
+  private void sub()
+  {
+    lab3.registerList[rd] = lab3.registerList[rs] - lab3.registerList[rt];
   }
 }

@@ -24,6 +24,41 @@ class IFormat extends Instruction{
 
     public void execute()
     {
-        //stuff happens
+        switch(opcode)
+        {
+            case 8:
+                addi();
+                break;
+            case 4:
+                beq();
+                break;
+            case 5:
+                bne();
+                break;
+            case 35:
+                lw();
+                break;
+            case 43:
+                sw();
+                break;
+        }
     }
+
+    // may be wrong registers
+
+    private void addi(){ lab3.registerList[rt] = lab3.registerList[rs] + immediate; }
+
+    private void beq(){
+        if (rs == rt)
+            lab3.registerList[32] = lab3.registerList[32] + immediate + 1;
+    }
+
+    private void bne(){
+        if (rs != rt)
+            lab3.registerList[32] = lab3.registerList[32] + immediate + 1;
+    }
+
+    private void lw(){ lab3.registerList[rt] = lab3.registerList[rs] + immediate; }
+
+    private void sw(){ lab3.memory[lab3.registerList[rt]] = lab3.registerList[rs] + immediate; }
 }
